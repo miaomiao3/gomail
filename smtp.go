@@ -6,7 +6,6 @@ import (
 	"io"
 	"net"
 	"net/smtp"
-	"strings"
 	"time"
 )
 
@@ -87,21 +86,26 @@ func (d *Dialer) Dial() (SendCloser, error) {
 		}
 	}
 
-	if d.Auth == nil && d.Username != "" {
-		if ok, auths := c.Extension("AUTH"); ok {
-			if strings.Contains(auths, "CRAM-MD5") {
-				d.Auth = smtp.CRAMMD5Auth(d.Username, d.Password)
-			} else if strings.Contains(auths, "LOGIN") &&
-				!strings.Contains(auths, "PLAIN") {
-				d.Auth = &loginAuth{
-					username: d.Username,
-					password: d.Password,
-					host:     d.Host,
-				}
-			} else {
-				d.Auth = smtp.PlainAuth("", d.Username, d.Password, d.Host)
-			}
-		}
+	//if d.Auth == nil && d.Username != "" {
+	//	if ok, auths := c.Extension("AUTH"); ok {
+	//		if strings.Contains(auths, "CRAM-MD5") {
+	//			d.Auth = smtp.CRAMMD5Auth(d.Username, d.Password)
+	//		} else if strings.Contains(auths, "LOGIN") &&
+	//			!strings.Contains(auths, "PLAIN") {
+	//			d.Auth = &loginAuth{
+	//				username: d.Username,
+	//				password: d.Password,
+	//				host:     d.Host,
+	//			}
+	//		} else {
+	//			d.Auth = smtp.PlainAuth("", d.Username, d.Password, d.Host)
+	//		}
+	//	}
+	//}
+	d.Auth = &loginAuth{
+		username: d.Username,
+		password: d.Password,
+		host:     d.Host,
 	}
 
 	if d.Auth != nil {
